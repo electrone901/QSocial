@@ -133,5 +133,5 @@ def getSymbols(eqport):
 #example
 quovo = Quovo()
 quovo.set_token(genToken())
-data = createAccount("alchen")
-print data["eqport"]["eq_pos"]
+#data = createAccount("alchen")
+#print data["eqport"]["eq_pos"]
