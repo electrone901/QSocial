@@ -49,7 +49,7 @@ def get_account_portfolio(account_id):
 def sync_account(account_id):
     response = quovo.sync_account(account_id)
     print "Syncing... " + str(account_id)
-    print parse_response(response)
+    #print parse_response(response)
 
 def check_sync_status(account_id):
     """Checks the ongoing sync progress on the Account.
@@ -125,4 +125,4 @@ def createAccount(username):
 #example
 quovo = Quovo()
 quovo.set_token(genToken())
-data = createAccount("alchen")
+#data = createAccount("alchen")
