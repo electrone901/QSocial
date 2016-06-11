@@ -1,17 +1,13 @@
 from quovo import Quovo
-import sys, time
-
-from controller import Terminal
+import sys, time, random
 
 quser = "alvikabir@nyu.edu"
 qpass = "laurenisthebest"
 
-token = sys.argv[1]
-print "---Token: " + token
-
-quovo = Quovo()
-
-quovo.set_token(token)
+def genToken():
+    response = quovo.create_token(quser, qpass, "testToken"+str(random.randint(0, 1000)))
+    token = response.json()['access_token']['token']
+    return token
 
 def parse_response(response):
     """Parses a response and its associated request into a dictionary.
@@ -93,17 +89,18 @@ def get_portfolio(portfolio_id):
     response = quovo.get_portfolio_positions(portfolio_id)
     return response
 
+#Gets Equity Stocks Only
 def get_eq_portfolio(portfolio_id):
     response  = get_portfolio(portfolio_id)
     positions = response.json()['positions']
     portfolio = {'eq_pos':[]}
+    brokers = ["E*TRADE", "Fidelity", "TD Ameritrade", "Scottrade", "Charles Schwab"]
     if len(positions) > 0:
         portfolio['id'] = positions[0]['account']
-        portfolio['name'] = positions[0]['portfolio_name']
+        portfolio['name'] = random.choice(brokers)
     for position in positions:
         if position['security_type'] == 'Equity':
             portfolio['eq_pos'].append(extract(position))
-    print portfolio
     return portfolio
 
 def extract(data):
@@ -114,16 +111,18 @@ def get_portfolio_history(portfolio_id):
     response = quovo.get_portfolio_history(portfolio_id)
     print parse_response(response)
 
-userid1 = create_user("alchen1")
-accid1 = create_account(userid1)
-sync_account(accid1)
-check_sync_status(accid1)
-#accid1 = 974190
-portid1 = get_account_portfolio(accid1)
-#get_portfolio(portid1)
-eq_port = get_eq_portfolio(portid1)
-print eq_port
-#get_portfolio_history(portid1)
+def createAccount(username):
+    userid = create_user(username)
+    accid = create_account(userid)
+    sync_account(accid)
+    check_sync_status(accid)
+    portid = get_account_portfolio(accid)
+    eqport = get_eq_portfolio(portid)
+    data = {"userid": userid, "accid": accid, "portid": [portid], "eqport": eqport}
+    print data
+    return data
 
-#t = Terminal()
-#t.create_token(quser, qpass)
+#example
+quovo = Quovo()
+quovo.set_token(genToken())
+data = createAccount("alchen")
