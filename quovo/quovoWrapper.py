@@ -118,11 +118,20 @@ def createAccount(username):
     check_sync_status(accid)
     portid = get_account_portfolio(accid)
     eqport = get_eq_portfolio(portid)
+    getSymbols(eqport)
     data = {"userid": userid, "accid": accid, "portid": [portid], "eqport": eqport}
     print data
     return data
 
+def getSymbols(eqport):
+    symbols = []
+    for stock in eqport["eq_pos"]:
+        symbols.append(stock['sym'])
+    print symbols
+    return symbols
+
 #example
 quovo = Quovo()
 quovo.set_token(genToken())
-#data = createAccount("alchen")
+data = createAccount("alchen")
+print data["eqport"]["eq_pos"]
